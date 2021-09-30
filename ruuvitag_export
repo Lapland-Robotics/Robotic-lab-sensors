@@ -1,0 +1,422 @@
+[
+    {
+        "id": "042b8595532f79d7",
+        "type": "tab",
+        "label": "BLE-RuuviTag-InfluxDB",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e41a9c98a4b91451",
+        "type": "scan ble",
+        "z": "042b8595532f79d7",
+        "uuids": "",
+        "duplicates": true,
+        "name": "",
+        "x": 930,
+        "y": 120,
+        "wires": [
+            [
+                "da75ee7087bd3910"
+            ]
+        ]
+    },
+    {
+        "id": "0ba4f5255c6797ef",
+        "type": "inject",
+        "z": "042b8595532f79d7",
+        "name": "Aloita BLE skannaus",
+        "props": [
+            {
+                "p": "payload.scan",
+                "v": "true",
+                "vt": "bool"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "start",
+        "x": 160,
+        "y": 60,
+        "wires": [
+            [
+                "edc0b650c7aaa772",
+                "e41a9c98a4b91451"
+            ]
+        ]
+    },
+    {
+        "id": "61062eafbc453daa",
+        "type": "inject",
+        "z": "042b8595532f79d7",
+        "name": "stop BLE skannaus ",
+        "props": [
+            {
+                "p": "payload.scan",
+                "v": "false",
+                "vt": "bool"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "stop",
+        "payloadType": "str",
+        "x": 170,
+        "y": 180,
+        "wires": [
+            [
+                "e41a9c98a4b91451"
+            ]
+        ]
+    },
+    {
+        "id": "da75ee7087bd3910",
+        "type": "ruuvitag",
+        "z": "042b8595532f79d7",
+        "name": "",
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "1d5e343b38c4a593",
+                "cc7de55a35925d8f"
+            ]
+        ]
+    },
+    {
+        "id": "e2ea73bc1c44b339",
+        "type": "debug",
+        "z": "042b8595532f79d7",
+        "name": "JSON output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1730,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "4d6770d3ebb5aa6c",
+        "type": "json",
+        "z": "042b8595532f79d7",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 1590,
+        "y": 200,
+        "wires": [
+            [
+                "e2ea73bc1c44b339",
+                "727956be02f548e2"
+            ]
+        ]
+    },
+    {
+        "id": "d40a1f2f64f13763",
+        "type": "influxdb out",
+        "z": "042b8595532f79d7",
+        "influxdb": "a0edccde91325b2c",
+        "name": "",
+        "measurement": "Temperature",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 930,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "727956be02f548e2",
+        "type": "function",
+        "z": "042b8595532f79d7",
+        "name": "JSON filter",
+        "func": "//Part where you parse JSON from \n//full message to only temperature\n//var Arr = msg.payload[\"humidity\"+\"temperature\"];\nvar tstamp=(new Date()).toISOString().replace(/t/gi,' ').trim();\n\n\nmsg.payload = {\n        measurement: \"Robolab\",\n        fields: {\n            temp: msg.payload[1],\n            humidity: msg.payload[0]\n        },\n        tags:{\n            location:\"Robolab\"\n        },\n        timestamp: tstamp\n    }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1730,
+        "y": 220,
+        "wires": [
+            [
+                "4e663070a374d0ce"
+            ]
+        ]
+    },
+    {
+        "id": "5bd72b20292da0c0",
+        "type": "debug",
+        "z": "042b8595532f79d7",
+        "name": "JSON modified",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2020,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "4e663070a374d0ce",
+        "type": "json",
+        "z": "042b8595532f79d7",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": true,
+        "x": 1870,
+        "y": 220,
+        "wires": [
+            [
+                "5bd72b20292da0c0"
+            ]
+        ]
+    },
+    {
+        "id": "edc0b650c7aaa772",
+        "type": "change",
+        "z": "042b8595532f79d7",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{ \"scan\": false }",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "610cb65c6590cff3"
+            ]
+        ]
+    },
+    {
+        "id": "610cb65c6590cff3",
+        "type": "delay",
+        "z": "042b8595532f79d7",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "x": 540,
+        "y": 120,
+        "wires": [
+            [
+                "e41a9c98a4b91451"
+            ]
+        ]
+    },
+    {
+        "id": "1d5e343b38c4a593",
+        "type": "function",
+        "z": "042b8595532f79d7",
+        "name": "",
+        "func": "let measure = JSON.parse(msg.payload);\n\nlet msg0 = {};\nmsg0.payload = (measure.temperature).toFixed(2)\nmsg0.topic = \"Temperature\";\n\nlet msg1 = {};\nmsg1.payload = measure.humidity;\nmsg1.topic = \"Humidity\";\n\nlet msg2 = {};\nmsg2.payload = (measure.pressure/100).toFixed(2);\n// node.warn(msg2.payload)\nmsg2.topic = \"Pressure\";\n\nlet msg3 = {};\nmsg3.payload = measure.battery/1000\nmsg3.topic = \"Battery\";\n\nlet msg4 = {};\nmsg4.payload = measure.txPower\nmsg4.topic = \"TxPower\";\n\nlet msg5 = {};\nmsg5.payload = measure.movementCounter\nmsg5.topic = \"Movement Counter\";\n\nreturn [msg0, msg1, msg2, msg3, msg4, msg5];",
+        "outputs": 6,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 320,
+        "wires": [
+            [
+                "ea8aa71bbf4c41c8",
+                "d40a1f2f64f13763"
+            ],
+            [
+                "df188df71b8af36b",
+                "9b63f02ea947ca37"
+            ],
+            [
+                "42e24f115c3d30a2",
+                "7f6da75f2ed84dec"
+            ],
+            [
+                "5d27feae7e0553f8"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "cc7de55a35925d8f",
+        "type": "debug",
+        "z": "042b8595532f79d7",
+        "name": "message from Ruuvitag",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "ea8aa71bbf4c41c8",
+        "type": "debug",
+        "z": "042b8595532f79d7",
+        "name": "msg0 - Temperature",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "df188df71b8af36b",
+        "type": "debug",
+        "z": "042b8595532f79d7",
+        "name": "msg1 - humidity",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "42e24f115c3d30a2",
+        "type": "debug",
+        "z": "042b8595532f79d7",
+        "name": "msg2 - pressure",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "5d27feae7e0553f8",
+        "type": "debug",
+        "z": "042b8595532f79d7",
+        "name": "msg3 - battery",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "9b63f02ea947ca37",
+        "type": "influxdb out",
+        "z": "042b8595532f79d7",
+        "influxdb": "a0edccde91325b2c",
+        "name": "",
+        "measurement": "Humidity",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 910,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "7f6da75f2ed84dec",
+        "type": "influxdb out",
+        "z": "042b8595532f79d7",
+        "influxdb": "a0edccde91325b2c",
+        "name": "",
+        "measurement": "Pressure",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 920,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "a0edccde91325b2c",
+        "type": "influxdb",
+        "hostname": "127.16.200.49",
+        "port": "8086",
+        "protocol": "http",
+        "database": "RuuviTagM",
+        "name": "iDB || RuuviTagM",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true,
+        "credentials": {}
+    }
+]
