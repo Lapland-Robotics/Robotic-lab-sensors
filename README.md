@@ -2,7 +2,7 @@
 
 
 ### Tarvittavat komponentit 
-Raspberry Pi 4 (16 Gt versio), Raspberry Pi touch Display, RuuviTag 
+[Raspberry Pi 4](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/) (16 Gt muistikortilla), [Raspberry Pi touch Display](https://www.raspberrypi.org/products/raspberry-pi-touch-display/), [RuuviTag](https://ruuvi.com/ruuvitag/) 
 
 ### Ei välttämättömät tarvikkeet 
 Näppäimistö, Hiiri, Näyttö 
@@ -24,7 +24,7 @@ Ensimmäinen vaihe projektin tekoon on asentaa Node-Red ohjelmisto. Node-Red on 
 
 https://nodered.org/docs/getting-started/raspberrypi 
 
-Nyt kun Node-Red on käyttövalmis, voit avata sen käyttöliittymän kirjoittamalla Raspberry Pi:n IP-osoitteen nettiselaimen osoitepalkkiin. Jos käytät samaa Raspberry Pi:llä, jolle asensit node-red pääset käsiksi siihen osoitteella http://localhost:1880. Jos asensit node-red toiselle Raspberry Pi:lle löydät sen IP-osoitteen kysymällä hostname -I komennolla Raspberry Pi:n komentorivillä. Saatuasi IP osoite, lisää sen perään :1880 päästäksesi oikeasta portista node-red graafiseen käyttöjärjestelmään (esim. http://10.10.10.10:1880). 
+Nyt kun Node-Red on käyttövalmis, voit avata sen käyttöliittymän kirjoittamalla Raspberry Pi:n IP-osoitteen nettiselaimen osoitepalkkiin. Jos käytät samaa Raspberry Pi:llä, jolle asensit node-red pääset käsiksi siihen osoitteella http://localhost:1880. Jos asensit node-red toiselle Raspberry Pi:lle löydät sen IP-osoitteen kysymällä hostname -I komennolla Raspberry Pi:n komentorivillä. Saatuasi IP-osoite, lisää sen perään :1880 päästäksesi oikeasta portista node-red graafiseen käyttöjärjestelmään (esim. http://10.10.10.10:1880). 
 
 ## InfluxDB 
 
