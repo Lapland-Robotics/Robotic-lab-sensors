@@ -26,6 +26,8 @@ https://nodered.org/docs/getting-started/raspberrypi
 
 Nyt kun Node-Red on käyttövalmis, voit avata sen käyttöliittymän kirjoittamalla Raspberry Pi:n IP-osoitteen nettiselaimen osoitepalkkiin. Jos käytät samaa Raspberry Pi:llä, jolle asensit node-red pääset käsiksi siihen osoitteella http://localhost:1880. Jos asensit node-red toiselle Raspberry Pi:lle löydät sen IP-osoitteen kysymällä hostname -I komennolla Raspberry Pi:n komentorivillä. Saatuasi IP-osoite, lisää sen perään :1880 päästäksesi oikeasta portista node-red graafiseen käyttöjärjestelmään (esim. http://10.10.10.10:1880). 
 
+![Screenshot 1](/screenshots/screenshot1.png)
+
 ## InfluxDB 
 
 Toinen vaihe projektissa on asentaa influxDB, johon tallennamme datan, joka tulee RuuviTag:stä. InfluxDB asentamisen löydät alla olevasta linkistä: 
@@ -37,6 +39,8 @@ Muistathan pistää tietokannan nimen muistiin seuraavaa vaihetta varten (käyt�
 ## Grafana 
 
 Viimeisenä päätteenä projektissa on Saada data näytettyä hienosti Touch Displaylle, jota voi tarkastella joko livenä näytöltä tai VNC avulla etänä. Jos olet jo asentanut Raspberry Pi Touch Display:n voit hypätä seuraavaan osion yli. 
+
+![Screenshot 2](/screenshots/screenshot2.png)
 
 Touch Display:n asentamisen aikana, on suositeltavaa sulkea Raspberry Pi kokonaan, jottei komponenteille satu virtapiikkejä tai oikosulkuja. Jos ruuvaat Raspberry Pi:n suoraa Touch Display:n kiinni, kannattaa se tehdä ensimmäisenä, jottei tarvitse johtoja asennella moneen kertaan. 
 
@@ -55,11 +59,17 @@ $ sudo /bin/systemctl status grafana-server
 ```
 Voit nyt kirjautua Grafana serverille menemällä nettiselaimessa osoitteeseen localhost:3000 tai aiemmin saamaasi ”hostname -I” IP-osoitteeseen käyttäen portin numeroa 3000. Oletus tunnukset ensimmäisellä kirjautumisella ovat admin/admin. 
 
-Yhdistäminen kaikkien välille. 
+![Screenshot 3](/screenshots/screenshot3.png)
+
+## Yhdistäminen kaikkien välille. 
 
 Tässä osuudessa käymme läpi, miten saamme RuuviTag:stä lähtevän JSON tiedon Raspberry Pi:n näytölle. Aluksi laitamme Node-Red osuuden toimintaan, että saamme RuuviTag:ltä JSON laitettua InfluxDB:lle. Ota yhteys IP-osoitteeseen 1880 portilla (http://localhost:1880 tai toimiva IP-osoite). Rakennamme alla olevan kuvan näköisen koodin. 
 
+![Screenshot 4](/screenshots/screenshot4.png)
+
 Ensimmäisenä menemme Manage Palette oikeasta yläkulmasta ja asennamme seuraavat paketit: node-red-contrib-noble, node-red-contrib-ruuvitag ja node-red-contrib-influxDB. Flow kulku on seuraavanlainen, joku 1 min välein BlueTooth skannaa RuuvitTag-tagillä olevan BlueTooth yhteyttä ja lukee sen antamaa JSON viestiä. Viesti muuntuu payloadiksi ja jakaantuu funktiossa neljään eri osaan, joka sitten lähetetään influxdb out moduulilla annetuun IP-osoitteeseen portin 8086 kautta. Eri viestit lähetetään niille annettuihin Measurement osioihin (temperature, humidity tai pressure). 
+
+![Screenshot 5.1](/screenshots/screenshot5.png) ![Screenshot 5.2](/screenshots/screenshot52.png)
 
 Funktio menee seuraavanlaisesti: 
 ```
@@ -98,7 +108,9 @@ Kun saat kaiken toimimaan oikein, voit mennä katsomaan Raspberry Pi:n komentori
 
 Viimeisenä haemme Grafana:lla tallennetut tiedot influx tietokannasta. Kuten Node-Red, pääset Grafana:n käyttöliittymään menemällä selaimeen ja kirjoittamalla IP-osoitteen portilla 3000 (esim. http://localhost:3000).  
 
-Lämpö tilannetiedot saat esille tekemällä uuden paneelin, lisäämällä uusi InfluxDB tietolähde RuuviTagM tietokannasta. Mene Asetuksiin (Settings) ja Tietolähde (Data Sources), siellä lisäät InfluxDB lähteen. Nimeä lähde mieleisellä tavalla, esimerkiksi RuuviTagM, nimellä ei ole väliä, kunhan muistat mikä se on. URL kohtaan lisäät localhost:8086, sillä InfluxDB ja Grafana ovat samalla koneella päällä. Database kohtaan tulee tietokannan nimi (esimerkkitapauksessa RuuviTagM). http Method kohtaan laitetaan GET. Tämän jälkeen laita Save & Test, tämä sekä tallentaa tiedot että testaa saako Grafana tietoa tuotua tietokannasta. Mikäli kaikki on OK, siirrytään lisäämään uusi paneeli. Jos Query kohdassa ei ole mitään, lisää siihen tehty Tietolähde (RuuviTagM). Sen alapuolelta löytyy Query parametrit, vaihda kysely tekstipohjaiseksi ja kirjoita siihen SELECT * FROM Temperature. Tämän jälkeen tee vielä paneelit Pressure ja Humidity arvoille. Humidity arvoon voit myös lisätä Left Y kohtaan minimi Y arvolle 0, kun kosteusarvo ei voi koskaan mennä alle nollan.  
+Lämpö tilannetiedot saat esille tekemällä uuden paneelin, lisäämällä uusi InfluxDB tietolähde RuuviTagM tietokannasta. Mene Asetuksiin (Settings) ja Tietolähde (Data Sources), siellä lisäät InfluxDB lähteen. Nimeä lähde mieleisellä tavalla, esimerkiksi RuuviTagM, nimellä ei ole väliä, kunhan muistat mikä se on. URL kohtaan lisäät localhost:8086, sillä InfluxDB ja Grafana ovat samalla koneella päällä. Database kohtaan tulee tietokannan nimi (esimerkkitapauksessa RuuviTagM). http Method kohtaan laitetaan GET. Tämän jälkeen laita Save & Test, tämä sekä tallentaa tiedot että testaa saako Grafana tietoa tuotua tietokannasta. Mikäli kaikki on OK, siirrytään lisäämään uusi paneeli. Jos Query kohdassa ei ole mitään, lisää siihen tehty Tietolähde (RuuviTagM). Sen alapuolelta löytyy Query parametrit, vaihda kysely tekstipohjaiseksi ja kirjoita siihen SELECT * FROM Temperature. Tämän jälkeen tee vielä paneelit Pressure ja Humidity arvoille. Humidity arvoon voit myös lisätä Left Y kohtaan minimi Y arvolle 0, kun kosteusarvo ei voi koskaan mennä alle nollan.
+
+![Screenshot 6](/screenshots/screenshot6.png)
 
 ## Puutteet ja Bugit 
 
