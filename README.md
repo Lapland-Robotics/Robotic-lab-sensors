@@ -24,6 +24,8 @@ Ensimmäinen vaihe projektin tekoon on asentaa Node-Red ohjelmisto. Node-Red on 
 
 https://nodered.org/docs/getting-started/raspberrypi 
 
+Ainakin Buster käyttöjärjestelmän kanssa voi olla että tulee ongelmaksi, että Node.Js versio on liian alhainen, siinä tapauksessa päivitä Node.Js versio 12:sta. Ohjeet löydät [täältä](https://computingforgeeks.com/how-to-install-nodejs-on-ubuntu-debian-linux-mint/).
+
 Nyt kun Node-Red on käyttövalmis, voit avata sen käyttöliittymän kirjoittamalla Raspberry Pi:n IP-osoitteen nettiselaimen osoitepalkkiin. Jos käytät samaa Raspberry Pi:llä, jolle asensit node-red pääset käsiksi siihen osoitteella http://localhost:1880. Jos asensit node-red toiselle Raspberry Pi:lle löydät sen IP-osoitteen kysymällä hostname -I komennolla Raspberry Pi:n komentorivillä. Saatuasi IP-osoite, lisää sen perään :1880 päästäksesi oikeasta portista node-red graafiseen käyttöjärjestelmään (esim. http://10.10.10.10:1880). 
 
 ![Screenshot 1](/screenshots/screenshot1.png)
