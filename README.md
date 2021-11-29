@@ -8,7 +8,7 @@
 Näppäimistö, Hiiri, Näyttö 
 
 ### Projektissa käytettävät ohjelmistot 
-Debian käyttöliittymä Raspberrylle, Node-Red, InfluxDB, Grafana 
+Debian käyttöliittymä Raspberrylle (nykyisin [Raspberry Pi OS - Buster](https://downloads.raspberrypi.org/raspbian/images/raspbian-2020-02-14/)), Node-Red, InfluxDB, Grafana 
 
 ## Valmistelut projektia varten ennen aloitusta 
 
